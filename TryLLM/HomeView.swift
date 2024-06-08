@@ -10,13 +10,14 @@ import SwiftUI
 import MarkdownUI
 
 struct HomeView: View {
-    @State var prompt = "compare python and swift"
-    @State var llm: LLMEvaluator
+    @State var prompt = "早安"
+    @State var llm: LocalLLM
     enum displayStyle: String, CaseIterable, Identifiable {
         case plain, markdown
         var id: Self { self }
     }
     @State private var selectedDisplayStyle = displayStyle.markdown
+    @State var chatHistory = [[String]]()
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -56,12 +57,35 @@ struct HomeView: View {
             ScrollView(.vertical) {
                 ScrollViewReader { sp in
                     Group {
-                        if selectedDisplayStyle == .plain {
-                            Text(llm.output)
-                                .textSelection(.enabled)
-                        } else {
-                            Markdown(llm.output)
-                                .textSelection(.enabled)
+                        ForEach(chatHistory, id: \.self) { item in
+                            if item[0] == "user" {
+                                HStack {
+                                    Spacer()
+                                    Text(item[1])
+                                        .textSelection(.enabled)
+                                }
+                            } else {
+                                HStack {
+                                    if selectedDisplayStyle == .plain {
+                                        Text(item[1])
+                                            .textSelection(.enabled)
+                                    } else {
+                                        Markdown(item[1])
+                                            .textSelection(.enabled)
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                        HStack {
+                            if selectedDisplayStyle == .plain {
+                                Text(llm.output)
+                                    .textSelection(.enabled)
+                            } else {
+                                Markdown(llm.output)
+                                    .textSelection(.enabled)
+                            }
+                            Spacer()
                         }
                     }
                     .onChange(of: llm.output) { _, _ in
@@ -106,8 +130,11 @@ struct HomeView: View {
     }
     
     private func generate() {
+        chatHistory.append(["model", llm.output])
+        chatHistory.append(["user", prompt])
+        prompt = ""
         Task {
-            await llm.generate(prompt: prompt)
+            await llm.generate(prompts: chatHistory)
         }
     }
     
@@ -123,5 +150,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView(llm: LLMEvaluator())
+    HomeView(llm: LocalLLM())
 }

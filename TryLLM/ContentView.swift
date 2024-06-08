@@ -12,7 +12,7 @@ import Metal
 import MLX
 
 struct ContentView: View {
-    @State var llm = LLMEvaluator()
+    @State var llm = LocalLLM()
     @Environment(DeviceStat.self) private var deviceStat
     
     var body: some View {
@@ -20,7 +20,7 @@ struct ContentView: View {
             TabView{
                 HomeView(llm: llm)
                     .tabItem { Label("Home", systemImage: "house") }
-                WeightFileListView()
+                ModelListView()
                     .tabItem { Label("Weights", systemImage: "folder") }
             }
                 .toolbar {
@@ -45,7 +45,7 @@ struct ContentView: View {
                 }
                 .task {
                     //pre-load the weights on launch to speed up the first generation
-//                    _ = try? await llm.load()
+                    _ = try? await llm.load()
                 }
         }
     }

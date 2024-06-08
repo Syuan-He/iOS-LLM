@@ -13,11 +13,12 @@
 		B51B0F3F2BFCFAE500F0EC41 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B51B0F3E2BFCFAE500F0EC41 /* Preview Assets.xcassets */; };
 		B51B0F4B2BFCFBD400F0EC41 /* LLM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51B0F4A2BFCFBD400F0EC41 /* LLM.swift */; };
 		B51B0F4D2BFCFDD400F0EC41 /* DeviceStat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51B0F4C2BFCFDD400F0EC41 /* DeviceStat.swift */; };
-		B546A7052C0C96DC00BA19DB /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = B546A7042C0C96DC00BA19DB /* LLM */; };
-		B546A7072C0C96DC00BA19DB /* MNIST in Frameworks */ = {isa = PBXBuildFile; productRef = B546A7062C0C96DC00BA19DB /* MNIST */; };
-		B546A70A2C0C980900BA19DB /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B546A7092C0C980900BA19DB /* MarkdownUI */; };
 		B546A70C2C0CA15600BA19DB /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = B546A70B2C0CA15600BA19DB /* .gitignore */; };
-		B5E9FA112C0715E900121291 /* WeightFileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E9FA102C0715E900121291 /* WeightFileListView.swift */; };
+		B557BC842C10B71800FAA297 /* LLM in Frameworks */ = {isa = PBXBuildFile; productRef = B557BC832C10B71800FAA297 /* LLM */; };
+		B557BC862C10B71800FAA297 /* MNIST in Frameworks */ = {isa = PBXBuildFile; productRef = B557BC852C10B71800FAA297 /* MNIST */; };
+		B557BC892C10B72600FAA297 /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = B557BC882C10B72600FAA297 /* MarkdownUI */; };
+		B5E7F7BD2C133F8500D73EF2 /* ModelContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E7F7BC2C133F8500D73EF2 /* ModelContentView.swift */; };
+		B5E9FA112C0715E900121291 /* ModelListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E9FA102C0715E900121291 /* ModelListView.swift */; };
 		B5EC66C22C00D6B900C5E45E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EC66C12C00D6B900C5E45E /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,7 +31,8 @@
 		B51B0F4A2BFCFBD400F0EC41 /* LLM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLM.swift; sourceTree = "<group>"; };
 		B51B0F4C2BFCFDD400F0EC41 /* DeviceStat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStat.swift; sourceTree = "<group>"; };
 		B546A70B2C0CA15600BA19DB /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		B5E9FA102C0715E900121291 /* WeightFileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFileListView.swift; sourceTree = "<group>"; };
+		B5E7F7BC2C133F8500D73EF2 /* ModelContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContentView.swift; sourceTree = "<group>"; };
+		B5E9FA102C0715E900121291 /* ModelListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelListView.swift; sourceTree = "<group>"; };
 		B5EC66C12C00D6B900C5E45E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -39,9 +41,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B546A70A2C0C980900BA19DB /* MarkdownUI in Frameworks */,
-				B546A7072C0C96DC00BA19DB /* MNIST in Frameworks */,
-				B546A7052C0C96DC00BA19DB /* LLM in Frameworks */,
+				B557BC892C10B72600FAA297 /* MarkdownUI in Frameworks */,
+				B557BC862C10B71800FAA297 /* MNIST in Frameworks */,
+				B557BC842C10B71800FAA297 /* LLM in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,7 +77,8 @@
 				B51B0F4A2BFCFBD400F0EC41 /* LLM.swift */,
 				B51B0F4C2BFCFDD400F0EC41 /* DeviceStat.swift */,
 				B5EC66C12C00D6B900C5E45E /* HomeView.swift */,
-				B5E9FA102C0715E900121291 /* WeightFileListView.swift */,
+				B5E9FA102C0715E900121291 /* ModelListView.swift */,
+				B5E7F7BC2C133F8500D73EF2 /* ModelContentView.swift */,
 			);
 			path = TryLLM;
 			sourceTree = "<group>";
@@ -105,9 +108,9 @@
 			);
 			name = TryLLM;
 			packageProductDependencies = (
-				B546A7042C0C96DC00BA19DB /* LLM */,
-				B546A7062C0C96DC00BA19DB /* MNIST */,
-				B546A7092C0C980900BA19DB /* MarkdownUI */,
+				B557BC832C10B71800FAA297 /* LLM */,
+				B557BC852C10B71800FAA297 /* MNIST */,
+				B557BC882C10B72600FAA297 /* MarkdownUI */,
 			);
 			productName = TryLLM;
 			productReference = B51B0F342BFCFAE400F0EC41 /* TryLLM.app */;
@@ -138,8 +141,8 @@
 			);
 			mainGroup = B51B0F2B2BFCFAE400F0EC41;
 			packageReferences = (
-				B546A7032C0C96DC00BA19DB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
-				B546A7082C0C980900BA19DB /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				B557BC822C10B71800FAA297 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
+				B557BC872C10B72600FAA297 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 			);
 			productRefGroup = B51B0F352BFCFAE400F0EC41 /* Products */;
 			projectDirPath = "";
@@ -168,8 +171,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5E9FA112C0715E900121291 /* WeightFileListView.swift in Sources */,
+				B5E9FA112C0715E900121291 /* ModelListView.swift in Sources */,
 				B51B0F4B2BFCFBD400F0EC41 /* LLM.swift in Sources */,
+				B5E7F7BD2C133F8500D73EF2 /* ModelContentView.swift in Sources */,
 				B51B0F3A2BFCFAE400F0EC41 /* ContentView.swift in Sources */,
 				B51B0F382BFCFAE400F0EC41 /* TryLLMApp.swift in Sources */,
 				B5EC66C22C00D6B900C5E45E /* HomeView.swift in Sources */,
@@ -381,7 +385,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B546A7032C0C96DC00BA19DB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+		B557BC822C10B71800FAA297 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples";
 			requirement = {
@@ -389,7 +393,7 @@
 				kind = branch;
 			};
 		};
-		B546A7082C0C980900BA19DB /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+		B557BC872C10B72600FAA297 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
 			requirement = {
@@ -400,19 +404,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B546A7042C0C96DC00BA19DB /* LLM */ = {
+		B557BC832C10B71800FAA297 /* LLM */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B546A7032C0C96DC00BA19DB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			package = B557BC822C10B71800FAA297 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
 			productName = LLM;
 		};
-		B546A7062C0C96DC00BA19DB /* MNIST */ = {
+		B557BC852C10B71800FAA297 /* MNIST */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B546A7032C0C96DC00BA19DB /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			package = B557BC822C10B71800FAA297 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
 			productName = MNIST;
 		};
-		B546A7092C0C980900BA19DB /* MarkdownUI */ = {
+		B557BC882C10B72600FAA297 /* MarkdownUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B546A7082C0C980900BA19DB /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			package = B557BC872C10B72600FAA297 /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
 			productName = MarkdownUI;
 		};
 /* End XCSwiftPackageProductDependency section */

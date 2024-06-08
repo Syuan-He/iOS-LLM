@@ -1,6 +1,6 @@
 // Copyright © 2024 Apple Inc.
 //
-//  DLModel.swift
+//  LLM.swift
 //  TryLLM
 //
 //  Created by 黃軒和 on 2024/5/21.
@@ -14,7 +14,7 @@ import MLXRandom
 import Tokenizers
 
 @Observable
-class LLMEvaluator {
+class LocalLLM {
 
     @MainActor
     var running = false
@@ -29,8 +29,9 @@ class LLMEvaluator {
         id: "mlx-community/gemma-1.1-2b-it-4bit",
         overrideTokenizer: "PreTrainedTokenizer"
     ) { prompt in
-        "<start_of_turn>user \(prompt)<end_of_turn><start_of_turn>model"
+        "<start_of_turn>\(prompt)<end_of_turn>"
     }
+    let modelStartWord = "<start_of_turn>model"
 
     /// parameters controlling the output
     let generateParameters = GenerateParameters(temperature: 0.6)
@@ -69,7 +70,7 @@ class LLMEvaluator {
     private func getModel() async throws -> (LLMModel, Tokenizer){
         
         // limit the buffer cache
-        MLX.GPU.set(cacheLimit: 20 * 1024 * 1024 * 1024)
+        MLX.GPU.set(cacheLimit: 20 * 1024 * 1024)
         do {
             let (model, tokenizer) = try await MLXLLM.load(configuration: modelConfiguration) {
                 [modelConfiguration] progress in
@@ -98,7 +99,7 @@ class LLMEvaluator {
                 directory: downloadBase.appending(path: "models").appending(path: modelWeightDir),
                 overrideTokenizer: "PreTrainedTokenizer"
             ) { prompt in
-                "<start_of_turn>user \(prompt)<end_of_turn><start_of_turn>model"
+                "<start_of_turn>\(prompt)<end_of_turn>"
             }
             print("Ready to load model.")
             let (model, tokenizer) = try await MLXLLM.load(configuration: rewriteModelConfig){
@@ -113,7 +114,7 @@ class LLMEvaluator {
         }
     }
 
-    func generate(prompt: String) async {
+    func generate(prompts: [[String]]) async {
         let canGenerate = await MainActor.run {
             if running {
                 return false
@@ -128,9 +129,15 @@ class LLMEvaluator {
 
         do {
             let (model, tokenizer) = try await load()
+            var chats = ""
+            var chat = ""
             // augment the prompt as needed
-            let prompt = modelConfiguration.prepare(prompt: prompt)
-            let promptTokens = tokenizer.encode(text: prompt)
+            prompts.forEach { prompt in
+                chat = "\(prompt[0]) \(prompt[1])"
+                chats += modelConfiguration.prepare(prompt: chat)
+            }
+            print(chats)
+            let promptTokens = tokenizer.encode(text: "\(chats)\(modelStartWord)")
 
             // each time you generate you will get something new
             MLXRandom.seed(UInt64(Date.timeIntervalSinceReferenceDate * 1000))
