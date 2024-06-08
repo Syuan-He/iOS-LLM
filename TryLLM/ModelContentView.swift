@@ -11,8 +11,24 @@ struct ModelContentView: View {
     let modelPath: String
     let weightPath: String
     @State private var contentList = [""]
+    @Environment(\.dismiss) var dismiss
+    @State private var isAlertPresented = false
     
     var body: some View {
+        Button{
+            isAlertPresented = true
+        } label: {
+            Text("Delete Model")
+        }
+        .alert("Delete the Model: \n\(weightPath)", isPresented: $isAlertPresented) {
+            Button("Cancel") {
+                
+            }
+            Button("Accept") {
+                try! FileManager.default.removeItem(atPath: "\(modelPath)/\(weightPath)")
+                dismiss()
+            }
+        }
         List {
             ForEach(contentList, id: \.self) { content in
                 Text(content)
