@@ -14,6 +14,7 @@ import MLX
 struct ContentView: View {
     @State var llm = LocalLLM()
     @Environment(DeviceStat.self) private var deviceStat
+    @State var modelConfigList = ModelConfigurationId.gemma1_1
     
     var body: some View {
         NavigationStack{
@@ -24,6 +25,14 @@ struct ContentView: View {
                     .tabItem { Label("Weights", systemImage: "folder") }
             }
                 .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Picker(selection: $modelConfigList) {
+                            ForEach(ModelConfigurationId.allCases) { modelConfig in
+                                Text(modelConfig.rawValue)
+                            }
+                        } label: {
+                        }
+                    }
                     ToolbarItem {
                         Label(
                             "Memory Usage: \(deviceStat.gpuUsage.activeMemory.formatted(.byteCount(style: .memory)))",
@@ -46,6 +55,14 @@ struct ContentView: View {
                 .task {
                     //pre-load the weights on launch to speed up the first generation
                     _ = try? await llm.load()
+                }
+                .onChange(of: modelConfigList) {
+                    llm.ChangeConfig(modelConfigList)
+                    if !llm.running{
+                        Task{
+                            _ = try? await llm.load()
+                        }
+                    }
                 }
         }
     }

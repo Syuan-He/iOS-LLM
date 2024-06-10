@@ -13,6 +13,12 @@ import MLX
 import MLXRandom
 import Tokenizers
 
+enum ModelConfigurationId: String, CaseIterable, Identifiable {
+    case gemma1_1
+    case phi3
+    var id: Self { self }
+}
+
 @Observable
 class LocalLLM {
 
@@ -25,13 +31,16 @@ class LocalLLM {
 
     /// this controls which model loads -- phi4bit is one of the smaller ones so this will fit on
     /// more devices
-    let modelConfiguration = ModelConfiguration(
+    var modelConfiguration = ModelConfiguration(
         id: "mlx-community/gemma-1.1-2b-it-4bit",
         overrideTokenizer: "PreTrainedTokenizer"
-    ) { prompt in
-        "<start_of_turn>\(prompt)<end_of_turn>"
+    )
+
+    var modelInitialWord = ""
+    var modelStartWord = "<start_of_turn>model"
+    var preparePrompt: (String, String) -> String = { role, prompt in
+        "<start_of_turn>\(role) \(prompt)<end_of_turn>"
     }
-    let modelStartWord = "<start_of_turn>model"
 
     /// parameters controlling the output
     let generateParameters = GenerateParameters(temperature: 0.6)
@@ -78,7 +87,6 @@ class LocalLLM {
                     self.modelInfo =
                     "Downloading \(modelConfiguration.name): \(Int(progress.fractionCompleted * 100))%"
                 }
-                //                print("\(progress)")
             }
             
             return (model, tokenizer)
@@ -95,23 +103,58 @@ class LocalLLM {
                 modelWeightDir = directory.lastPathComponent
             }
 
-            let rewriteModelConfig = ModelConfiguration(
+            modelConfiguration = ModelConfiguration(
                 directory: downloadBase.appending(path: "models").appending(path: modelWeightDir),
-                overrideTokenizer: "PreTrainedTokenizer"
-            ) { prompt in
-                "<start_of_turn>\(prompt)<end_of_turn>"
-            }
-            print("Ready to load model.")
-            let (model, tokenizer) = try await MLXLLM.load(configuration: rewriteModelConfig){
+                tokenizerId: modelConfiguration.tokenizerId,
+                overrideTokenizer: modelConfiguration.overrideTokenizer,
+                defaultPrompt: modelConfiguration.defaultPrompt,
+                extraEOSTokens: modelConfiguration.extraEOSTokens
+            )
+            let (model, tokenizer) = try await MLXLLM.load(configuration: modelConfiguration){
                 [modelConfiguration] progress in
                 DispatchQueue.main.sync {
                     self.modelInfo =
                     "Loading \(modelConfiguration.name): \(Int(progress.fractionCompleted * 100))%"
                 }
             }
-            print ("Model loaded.")
             return (model, tokenizer)
         }
+    }
+    
+    public func ChangeConfig(_ modelConfigId: ModelConfigurationId){
+        /// this controls which model loads -- phi4bit is one of the smaller ones so this will fit on
+        /// more devices
+        switch modelConfigId {
+        case .gemma1_1:
+            modelConfiguration = ModelConfiguration(
+                id: "mlx-community/gemma-1.1-2b-it-4bit",
+                overrideTokenizer: "PreTrainedTokenizer"
+            )
+            modelInitialWord = ""
+            modelStartWord = "<start_of_turn>model"
+            preparePrompt = { role, prompt in
+                "<start_of_turn>\(role) \(prompt)<end_of_turn>"
+            }
+            break
+        case .phi3:
+            modelConfiguration = ModelConfiguration(
+                id: "mlx-community/Phi-3-mini-4k-instruct-4bit-no-q-embed",
+                defaultPrompt: "what is the gravity on mars and the moon?",
+                extraEOSTokens: ["<|end|>"]
+            )
+            modelInitialWord = "<s>"
+            modelStartWord = "<|assistant|>\n"
+            preparePrompt = { role, prompt in
+                if role == "model" {
+                    return "<|assistant|>\n\(prompt)<|end|>\n"
+                }
+                return "<|\(role)|>\n\(prompt)<|end|>\n"
+            }
+            break
+        }
+        stat = ""
+        modelInfo = ""
+        loadState = .idle
     }
 
     func generate(prompts: [[String]]) async {
@@ -130,14 +173,12 @@ class LocalLLM {
         do {
             let (model, tokenizer) = try await load()
             var chats = ""
-            var chat = ""
             // augment the prompt as needed
             prompts.forEach { prompt in
-                chat = "\(prompt[0]) \(prompt[1])"
-                chats += modelConfiguration.prepare(prompt: chat)
+                chats += preparePrompt(prompt[0], prompt[1])
             }
             print(chats)
-            let promptTokens = tokenizer.encode(text: "\(chats)\(modelStartWord)")
+            let promptTokens = tokenizer.encode(text: "\(modelInitialWord)\(chats)\(modelStartWord)")
 
             // each time you generate you will get something new
             MLXRandom.seed(UInt64(Date.timeIntervalSinceReferenceDate * 1000))

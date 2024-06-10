@@ -130,11 +130,15 @@ struct HomeView: View {
     }
     
     private func generate() {
-        chatHistory.append(["model", llm.output])
-        chatHistory.append(["user", prompt])
-        prompt = ""
-        Task {
-            await llm.generate(prompts: chatHistory)
+        if prompt != "" {
+            if llm.output != "" {
+                chatHistory.append(["model", llm.output])
+            }
+            chatHistory.append(["user", prompt])
+            prompt = ""
+            Task {
+                await llm.generate(prompts: chatHistory)
+            }
         }
     }
     
